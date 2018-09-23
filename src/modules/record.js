@@ -10,6 +10,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case 'updateRecording':
+      const index = state.recordings.findIndex(recording => recording === action.recording)
+      return {
+        ...state,
+        recordings: [...state.recordings.slice(0, index), {name: action.name, input: action.recording.input}, ...state.recordings.slice(index+1)]
+      }
     case 'onClickPlayRecording':
       return {
         ...state,
@@ -40,6 +46,15 @@ export default (state = initialState, action) => {
       }
     default:
       return state
+  }
+}
+export const updateRecording = (recording, name) => {
+  return dispatch => {
+    dispatch({
+      type: 'updateRecording',
+      recording,
+      name
+    })
   }
 }
 export const registerInstrument = (instrument) => {

@@ -15,7 +15,8 @@ import { connect } from 'react-redux'
 import {
   onClickRecord,
   onClickFinishRecording,
-  onClickPlayRecording
+  onClickPlayRecording,
+  updateRecording,
 } from 'modules/record'
 
 // webkitAudioContext fallback needed to support Safari
@@ -122,14 +123,14 @@ function playTetris() {
 
 
 const noteRange = {
-  first: MidiNumbers.fromNote('c3'),
-  last: MidiNumbers.fromNote('f4'),
+  first: MidiNumbers.fromNote('c1'),
+  last: MidiNumbers.fromNote('b7'),
 };
 // console.log('MidiNumbers.fromNote(c3)', MidiNumbers.fromNote('c3'))
 
 const keyboardShortcuts = KeyboardShortcuts.create({
-  firstNote: noteRange.first,
-  lastNote: noteRange.last,
+  firstNote: MidiNumbers.fromNote('c3'), //noteRange.first
+  lastNote: MidiNumbers.fromNote('b4'), //noteRange.last
   keyboardConfig: KeyboardShortcuts.HOME_ROW,
 });
 
@@ -264,40 +265,51 @@ class Home extends React.Component {
     }
   }
   onClickPlayRecording(recording) {
+    // this.props.onClickPlayRecording()
     recording.map(input => {
       this.props.instrument.play(input.midiNumber, audioContext.currentTime + input.currentTime)
     })
   }
   render() {
-    const { recording } = this.state
-    // console.log("===recording", recording)
-    const Recordings = <Fragment>{this.props.recordings.map(recording => <div><meta>{recording.name}</meta><button key={recording.name + 'key'} onClick={() => this.onClickPlayRecording(recording.input)}>play</button></div>)}</Fragment>
     return (
       <div>
-        <h1>react-piano demos</h1>
+        <h1>React Piano MIDI Record Play</h1>
         <div className="mt-5">
           <p>Basic piano with hardcoded width</p>
-          <SoundfontProvider
-            instrumentName="acoustic_grand_piano"
-            audioContext={audioContext}
-            hostname={soundfontHostname}
-            render={({ isLoading, playNote, stopNote }) => (
-              <Piano
-                audioContext={audioContext}
-                noteRange={noteRange}
-                width={300}
-                onPlayNote={playNote}
-                onStopNote={stopNote}
-                disabled={isLoading}
-                keyboardShortcuts={keyboardShortcuts}
-              />
+          <DimensionsProvider>
+            {({ containerWidth, containerHeight }) => (
+            <SoundfontProvider
+              instrumentName="acoustic_grand_piano"
+              audioContext={audioContext}
+              hostname={soundfontHostname}
+              render={({ isLoading, playNote, stopNote }) => (
+                <Piano
+                  audioContext={audioContext}
+                  noteRange={noteRange}
+                  width={containerWidth}
+                  onPlayNote={playNote}
+                  onStopNote={stopNote}
+                  disabled={isLoading}
+                  keyboardShortcuts={keyboardShortcuts}
+                />
             )}
           />
+          )}
+        </DimensionsProvider>
         </div>
         <button onClick={() => this.onClickRecord()}>{this.state.recordButtonText}</button>
         <button onClick={(e) => this.onClickRecordButton2(e)}>{this.state.recordButton2}</button>
-        { (this.props.recordings.length !== 0 && !this.props.isRecording) &&
-          <Recordings />
+        { this.props.recordings.length !== 0 &&
+          this.props.recordings.map(
+            recording => {
+              return (
+                <div>
+                  <input type="text" value={recording.name} onChange={(e) => this.props.updateRecording(recording, e.target.value)} />
+                  <button key={`${recording.name} key`} disabled={this.props.isRecording} onClick={() => this.onClickPlayRecording(recording.input)}>play</button>
+                </div>
+              )
+            }
+            )
         }
       </div>
     );
@@ -396,6 +408,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onClickRecord: (input) => dispatch(onClickRecord(input)),
   onClickFinishRecording: (recording) => dispatch(onClickFinishRecording(recording)),
   onClickPlayRecording: () => dispatch(onClickPlayRecording()),
+  updateRecording: (recording, name) => dispatch(updateRecording(recording, name))
 })
 
 export default connect(
