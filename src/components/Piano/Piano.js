@@ -147,20 +147,6 @@ class Piano extends React.Component {
       return;
     }
 
-    // record - seunghun
-    // console.log("===record played note",
-    // {
-    //   midiNumber,
-    //   activeNotes: this.state.activeNotes,
-    //   currentTime: this.props.audioContext.currentTime,
-    // })
-    // this.props.record({
-    //   midiNumber,
-    //   activeNotes: this.state.activeNotes,
-    //   currentTime: this.props.audioContext.currentTime,
-    // })
-
-
     // Pass in previous activeNotes for recording functionality
     this.props.onPlayNote(midiNumber, this.state.activeNotes);
     this.setState((prevState) => ({
@@ -207,10 +193,6 @@ class Piano extends React.Component {
   };
 
   render() {
-    if(this.props.audioContext) {
-      // console.log("===activeNotes, timing", this.state.activeNotes, this.props.audioContext.currentTime)
-      // console.log("===audioContext", this.props.audioContext)
-    }
     return (
       <Keyboard
         noteRange={this.props.noteRange}

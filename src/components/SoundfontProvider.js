@@ -76,25 +76,8 @@ class SoundfontProvider extends React.Component {
 
       // recording part
       if(this.props.isRecording) {
-        //   this.setState((state, props) => {
-        //     console.log("===recording, input", state.recording, input)
-        //     return {
-        //       recording: [...state.recording, {midiNumber, currentTime: this.props.audioContext.currentTime - this.props.startRecordingTime}]
-        //     }
-        //   })
         this.props.record({midiNumber, currentTime: this.props.audioContext.currentTime - this.props.startRecordingTime})
       }
-      // if(this.props.isRecording) {
-      //   this.setState((state, props) => {
-      //     console.log("===recording, input", state.recording, input)
-      //     return {
-      //       recording: [...state.recording, {midiNumber, currentTime: this.props.audioContext.currentTime - this.props.startRecordingTime}]
-      //     }
-      //   })
-      // }
-      // // finished recording
-      // if(!this.props.isRecording && this.state.recording) {
-      // }
     });
   };
 
