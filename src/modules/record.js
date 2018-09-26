@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
       const index = state.recordings.findIndex(recording => recording === action.recording)
       return {
         ...state,
-        recordings: [...state.recordings.slice(0, index), {name: action.name, input: action.recording.input}, ...state.recordings.slice(index+1)]
+        recordings: [...state.recordings.slice(0, index), {title: action.title, input: action.recording.input}, ...state.recordings.slice(index+1)]
       }
     case 'onClickPlayRecording':
       return {
@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
     case 'onClickFinishRecording':
       return {
         ...state,
-        recordings: [...state.recordings, {name: `recording ${state.recordings.length + 1}`, input: state.recording}],
+        recordings: [...state.recordings, {title: `recording ${state.recordings.length + 1}`, input: state.recording}],
         recording: [],
         isRecording: !state.isRecording
       }
@@ -48,12 +48,12 @@ export default (state = initialState, action) => {
       return state
   }
 }
-export const updateRecording = (recording, name) => {
+export const updateRecording = (recording, title) => {
   return dispatch => {
     dispatch({
       type: 'updateRecording',
       recording,
-      name
+      title
     })
   }
 }
